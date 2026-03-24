@@ -1,4 +1,15 @@
-# Queue System API
+<p align="center">
+  <img src="FASTB.png" alt="realogom" width="610" />
+</p>
+<p align="center">
+  <a href="https://github.com/cauaenzo/FAST-BACK/LICENSE"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT" /></a>
+  <a href="https://opensource.org/licenses/Apache-2.0"><img src="https://img.shields.io/badge/License-Apache%202.0-blue.svg" alt="License: Apache 2.0" /></a>
+     <!-- Versão -->
+  <img src="https://img.shields.io/badge/version-1.0.0-green" />
+
+  <!-- Linguagem -->
+  <img src="https://img.shields.io/badge/python-3.10-blue" />
+</p>
 
 Sistema de fila assíncrono construído com **FastAPI**, simulando o comportamento de ferramentas como RabbitMQ e Celery. Jobs são enfileirados, processados por workers assíncronos e têm seus status atualizados em tempo real.
 
