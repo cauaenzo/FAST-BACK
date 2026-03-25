@@ -3,6 +3,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 
 from app.api.router import api_router
+from app.core.banner import print_banner
 from app.core.config import settings
 from app.core.logging import get_logger
 from app.workers.job_worker import start_workers
@@ -12,6 +13,7 @@ logger = get_logger(__name__)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    print_banner()
     logger.info("Iniciando aplicação...")
     await start_workers()
     logger.info(f"API disponível em: http://{settings.HOST}:{settings.PORT}")
