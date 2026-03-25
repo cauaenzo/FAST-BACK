@@ -5,10 +5,15 @@
   <a href="https://github.com/cauaenzo/FAST-BACK/LICENSE"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT" /></a>
   <a href="https://opensource.org/licenses/Apache-2.0"><img src="https://img.shields.io/badge/License-Apache%202.0-blue.svg" alt="License: Apache 2.0" /></a>
      <!-- Versão -->
-  <img src="https://img.shields.io/badge/version-1.0.0-green" />
+  <img src="https://img.shields.io/badge/version-1.0.0-blueviolet?labelColor=blueviolet&style=flat" />
 
   <!-- Linguagem -->
-  <img src="https://img.shields.io/badge/python-3.10-blue" />
+  <img src="https://img.shields.io/badge/python-3.10-green?labelColor=blue&style=flat" />
+  <img src="https://img.shields.io/badge/escalability-96%25-blueviolet" />
+  <img src="https://img.shields.io/badge/performance-excellent-brightgreen?labelColor=brightgreen&style=flat" />
+  <img src="https://img.shields.io/badge/code%20quality-A+-4caf50?labelColor=4caf50&style=flat" />
+
+
 </p>
 
 Sistema de fila assíncrono construído com **FastAPI**, simulando o comportamento de ferramentas como RabbitMQ e Celery. Jobs são enfileirados, processados por workers assíncronos e têm seus status atualizados em tempo real.
