@@ -45,3 +45,9 @@ htmlcov/
 
 # Type checking
 .mypy_cache/
+
+# Docker
+.dockerignore
+
+# Alembic
+alembic/versions/*.pyc
