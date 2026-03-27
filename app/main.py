@@ -5,17 +5,34 @@ from fastapi import FastAPI
 from app.api.router import api_router
 from app.core.banner import print_banner
 from app.core.config import settings
-from app.core.database import Base, engine
+from app.core.database import Base, engine, AsyncSessionLocal
 from app.core.logging import get_logger
+from app.core.security import hash_password
+from app.models.user import User, UserRole
+from app.models.job import Job  # noqa: F401
+from app.repositories.user_repository import UserRepository
 from app.workers.job_worker import start_workers
 
 logger = get_logger(__name__)
+
+
+async def _seed_admin() -> None:
+    async with AsyncSessionLocal() as session:
+        repo = UserRepository(session)
+        if not await repo.find_by_username(settings.ADMIN_USERNAME):
+            await repo.save(User(
+                username=settings.ADMIN_USERNAME,
+                password=hash_password(settings.ADMIN_PASSWORD),
+                role=UserRole.ADMIN,
+            ))
+            logger.info(f"Usuário admin criado | username={settings.ADMIN_USERNAME}")
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
+    await _seed_admin()
     print_banner()
     logger.info("Iniciando aplicação...")
     await start_workers()
@@ -33,6 +50,7 @@ app = FastAPI(
     lifespan=lifespan,
     docs_url="/docs",
     redoc_url="/redoc",
+    swagger_ui_parameters={"persistAuthorization": True},
 )
 
 app.include_router(api_router)

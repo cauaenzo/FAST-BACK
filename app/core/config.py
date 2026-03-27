@@ -25,8 +25,15 @@ class Settings(BaseSettings):
             f"@{self.POSTGRES_HOST}:{self.POSTGRES_PORT}/{self.POSTGRES_DB}"
         )
 
-    PGADMIN_EMAIL: str = "admin@admin.com"
-    PGADMIN_PASSWORD: str = "admin123"
+    JWT_SECRET_KEY: str
+    JWT_ALGORITHM: str = "HS256"
+    JWT_EXPIRE_MINUTES: int = 30
+
+    ADMIN_USERNAME: str
+    ADMIN_PASSWORD: str
+
+    PGADMIN_EMAIL: str
+    PGADMIN_PASSWORD: str
 
     model_config = {"env_file": ".env", "extra": "ignore"}
 

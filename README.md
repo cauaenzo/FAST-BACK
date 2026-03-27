@@ -97,32 +97,58 @@ Swagger UI:        http://0.0.0.0:8000/docs
 
 ## Endpoints
 
-| Método | Rota                  | Descrição               |
-|--------|-----------------------|-------------------------|
-| POST   | `/api/v1/jobs`        | Cria e enfileira um job |
-| GET    | `/api/v1/jobs`        | Lista todos os jobs     |
-| GET    | `/api/v1/jobs/{id}`   | Consulta um job         |
-| GET    | `/health`             | Health check            |
+### Auth
+
+| Método | Rota                      | Descrição                        | Proteção |
+|--------|---------------------------|----------------------------------|----------|
+| POST   | `/api/v1/auth/register`   | Registra um novo usuário         | Pública  |
+| POST   | `/api/v1/auth/login`      | Autentica e retorna token JWT    | Pública  |
+
+### Jobs
+
+| Método | Rota                  | Descrição               | Proteção        |
+|--------|-----------------------|-------------------------|-----------------|
+| POST   | `/api/v1/jobs`        | Cria e enfileira um job | Autenticado     |
+| GET    | `/api/v1/jobs`        | Lista todos os jobs     | Admin           |
+| GET    | `/api/v1/jobs/{id}`   | Consulta um job         | Autenticado     |
+| GET    | `/health`             | Health check            | Pública         |
 
 ---
 
 ## Exemplos de uso
 
+### Registrar usuário
+```bash
+curl -X POST http://localhost:8000/api/v1/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{"username": "joao", "password": "senha123"}'
+```
+
+### Login e obter token
+```bash
+curl -X POST http://localhost:8000/api/v1/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"username": "joao", "password": "senha123"}'
+```
+
 ### Criar um job
 ```bash
 curl -X POST http://localhost:8000/api/v1/jobs \
+  -H "Authorization: Bearer SEU_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{"payload": {"task": "send_email", "to": "user@example.com"}, "priority": 5}'
 ```
 
 ### Consultar status
 ```bash
-curl http://localhost:8000/api/v1/jobs/{job_id}
+curl http://localhost:8000/api/v1/jobs/{job_id} \
+  -H "Authorization: Bearer SEU_TOKEN"
 ```
 
-### Listar todos
+### Listar todos (admin)
 ```bash
-curl http://localhost:8000/api/v1/jobs
+curl http://localhost:8000/api/v1/jobs \
+  -H "Authorization: Bearer SEU_TOKEN_ADMIN"
 ```
 
 ---
@@ -140,21 +166,26 @@ curl http://localhost:8000/api/v1/jobs
 
 ## Configurações (.env)
 
-| Variável             | Descrição                          |
-|----------------------|------------------------------------|
-| `HOST`               | Host do servidor                   |
-| `PORT`               | Porta do servidor                  |
-| `WORKER_CONCURRENCY` | Número de workers paralelos        |
-| `JOB_PROCESSING_MIN` | Tempo mínimo de processamento (s)  |
-| `JOB_PROCESSING_MAX` | Tempo máximo de processamento (s)  |
-| `JOB_FAILURE_RATE`   | Taxa de falha simulada (0.0 - 1.0) |
-| `POSTGRES_USER`      | Usuário do banco                   |
-| `POSTGRES_PASSWORD`  | Senha do banco                     |
-| `POSTGRES_DB`        | Nome do banco                      |
-| `POSTGRES_HOST`      | Host do banco (padrão: postgres)   |
-| `POSTGRES_PORT`      | Porta do banco (padrão: 5432)      |
-| `PGADMIN_EMAIL`      | Email de acesso ao pgAdmin         |
-| `PGADMIN_PASSWORD`   | Senha de acesso ao pgAdmin         |
+| Variável             | Descrição                                        |
+|----------------------|--------------------------------------------------|
+| `HOST`               | Host do servidor                                 |
+| `PORT`               | Porta do servidor                                |
+| `WORKER_CONCURRENCY` | Número de workers paralelos                      |
+| `JOB_PROCESSING_MIN` | Tempo mínimo de processamento (s)                |
+| `JOB_PROCESSING_MAX` | Tempo máximo de processamento (s)                |
+| `JOB_FAILURE_RATE`   | Taxa de falha simulada (0.0 - 1.0)               |
+| `POSTGRES_USER`      | Usuário do banco                                 |
+| `POSTGRES_PASSWORD`  | Senha do banco                                   |
+| `POSTGRES_DB`        | Nome do banco                                    |
+| `POSTGRES_HOST`      | Host do banco (padrão: postgres)                 |
+| `POSTGRES_PORT`      | Porta do banco (padrão: 5432)                    |
+| `PGADMIN_EMAIL`      | Email de acesso ao pgAdmin                       |
+| `PGADMIN_PASSWORD`   | Senha de acesso ao pgAdmin                       |
+| `JWT_SECRET_KEY`     | Chave secreta para assinar tokens JWT            |
+| `JWT_ALGORITHM`      | Algoritmo JWT (padrão: HS256)                    |
+| `JWT_EXPIRE_MINUTES` | Tempo de expiração do token em minutos           |
+| `ADMIN_USERNAME`     | Usuário admin criado no primeiro startup         |
+| `ADMIN_PASSWORD`     | Senha admin criada no primeiro startup           |
 
 ---
 
