@@ -47,7 +47,7 @@ htmlcov/
 .mypy_cache/
 
 # Docker
-.dockerignore
+# .dockerignore deve ir pro repositório
 
 # Alembic
 alembic/versions/*.pyc

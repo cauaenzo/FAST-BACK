@@ -39,10 +39,28 @@ services:
     networks:
       - fastback_net
 
+  test:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: test
+    container_name: fastback_test
+    env_file: .env
+    environment:
+      POSTGRES_HOST: postgres
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - fastback_net
+    profiles:
+      - test
+
   api:
     build:
       context: .
       dockerfile: Dockerfile
+      target: production
     container_name: fastback_api
     restart: unless-stopped
     env_file: .env

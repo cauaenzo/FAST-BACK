@@ -8,7 +8,7 @@ from app.models.job import JobStatus
 
 
 class JobCreate(BaseModel):
-    payload: dict[str, Any] = Field(..., example={"task": "send_email", "to": "user@example.com"})
+    payload: dict[str, Any] = Field(..., json_schema_extra={"example": {"task": "send_email", "to": "user@example.com"}})
     priority: int = Field(default=0, ge=0, le=10, description="Prioridade do job (0 = menor, 10 = maior)")
 
 
@@ -24,8 +24,7 @@ class JobResponse(BaseModel):
     started_at: datetime | None
     finished_at: datetime | None
 
-    class Config:
-        from_attributes = True
+    model_config = {"from_attributes": True}
 
 
 class JobCreatedResponse(BaseModel):
