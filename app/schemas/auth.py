@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from app.models.user import UserRole
 
@@ -19,3 +19,17 @@ class UserResponse(BaseModel):
     role: UserRole
 
     model_config = {"from_attributes": True}
+
+
+class UserListResponse(BaseModel):
+    total: int
+    users: list[UserResponse]
+
+
+class PasswordUpdate(BaseModel):
+    current_password: str
+    new_password: str = Field(min_length=6)
+
+
+class RolePatch(BaseModel):
+    role: UserRole

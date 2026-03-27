@@ -1,13 +1,13 @@
 from uuid import UUID
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.deps import get_current_user, require_admin
 from app.core.database import get_session
 from app.models.user import User
 from app.repositories.job_repository import JobRepository
-from app.schemas.job import JobCreate, JobCreatedResponse, JobListResponse, JobResponse
+from app.schemas.job import JobCreate, JobCreatedResponse, JobListResponse, JobPatch, JobResponse, JobUpdate
 from app.services.job_service import JobService
 from app.workers.job_worker import enqueue
 
@@ -48,3 +48,38 @@ async def get_job(
 ):
     """Consulta o status de um job. Requer autenticação."""
     return await service.get_by_id(job_id)
+
+
+@router.put("/{job_id}", response_model=JobResponse)
+async def update_job(
+    job_id: UUID,
+    data: JobUpdate,
+    service: JobService = Depends(get_service),
+    _: User = Depends(require_admin),
+):
+    """Substitui payload e prioridade de um job pending ou failed. Requer admin."""
+    return await service.update(job_id, data)
+
+
+@router.patch("/{job_id}", response_model=JobResponse)
+async def patch_job(
+    job_id: UUID,
+    data: JobPatch,
+    service: JobService = Depends(get_service),
+    _: User = Depends(get_current_user),
+):
+    """Atualiza parcialmente um job — prioridade ou reenfileiramento. Requer autenticação."""
+    job = await service.patch(job_id, data)
+    if data.requeue:
+        await enqueue(job.id)
+    return job
+
+
+@router.delete("/{job_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_job(
+    job_id: UUID,
+    service: JobService = Depends(get_service),
+    _: User = Depends(require_admin),
+):
+    """Remove um job. Não é permitido deletar jobs em processamento. Requer admin."""
+    await service.delete(job_id)

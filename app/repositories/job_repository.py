@@ -1,6 +1,6 @@
 from uuid import UUID
 
-from sqlalchemy import select
+from sqlalchemy import delete, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.job import Job
@@ -23,3 +23,8 @@ class JobRepository:
     async def find_all(self) -> list[Job]:
         result = await self._session.execute(select(Job).order_by(Job.created_at.desc()))
         return list(result.scalars().all())
+
+    async def delete(self, job_id: UUID) -> bool:
+        result = await self._session.execute(delete(Job).where(Job.id == str(job_id)))
+        await self._session.commit()
+        return result.rowcount > 0
