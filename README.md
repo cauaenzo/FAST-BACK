@@ -99,19 +99,27 @@ Swagger UI:        http://0.0.0.0:8000/docs
 
 ### Auth
 
-| Método | Rota                      | Descrição                        | Proteção |
-|--------|---------------------------|----------------------------------|----------|
-| POST   | `/api/v1/auth/register`   | Registra um novo usuário         | Pública  |
-| POST   | `/api/v1/auth/login`      | Autentica e retorna token JWT    | Pública  |
+| Método | Rota                              | Descrição                              | Proteção        |
+|--------|-----------------------------------|----------------------------------------|-----------------|
+| POST   | `/api/v1/auth/register`           | Registra um novo usuário               | Pública         |
+| POST   | `/api/v1/auth/login`              | Autentica e retorna token JWT          | Pública         |
+| GET    | `/api/v1/auth/users`              | Lista todos os usuários                | Admin           |
+| GET    | `/api/v1/auth/users/{id}`         | Busca usuário por ID                   | Próprio ou Admin|
+| PUT    | `/api/v1/auth/users/{id}/password`| Atualiza senha                         | Próprio usuário |
+| PATCH  | `/api/v1/auth/users/{id}/role`    | Promove ou rebaixa role                | Admin           |
+| DELETE | `/api/v1/auth/users/{id}`         | Remove usuário                         | Admin           |
 
 ### Jobs
 
-| Método | Rota                  | Descrição               | Proteção        |
-|--------|-----------------------|-------------------------|-----------------|
-| POST   | `/api/v1/jobs`        | Cria e enfileira um job | Autenticado     |
-| GET    | `/api/v1/jobs`        | Lista todos os jobs     | Admin           |
-| GET    | `/api/v1/jobs/{id}`   | Consulta um job         | Autenticado     |
-| GET    | `/health`             | Health check            | Pública         |
+| Método | Rota                  | Descrição                              | Proteção    |
+|--------|-----------------------|----------------------------------------|-------------|
+| POST   | `/api/v1/jobs`        | Cria e enfileira um job                | Autenticado |
+| GET    | `/api/v1/jobs`        | Lista todos os jobs                    | Admin       |
+| GET    | `/api/v1/jobs/{id}`   | Consulta um job                        | Autenticado |
+| PUT    | `/api/v1/jobs/{id}`   | Substitui payload e priority           | Admin       |
+| PATCH  | `/api/v1/jobs/{id}`   | Atualiza priority ou reenfileira       | Autenticado |
+| DELETE | `/api/v1/jobs/{id}`   | Remove um job                          | Admin       |
+| GET    | `/health`             | Health check                           | Pública     |
 
 ---
 
@@ -145,10 +153,56 @@ curl http://localhost:8000/api/v1/jobs/{job_id} \
   -H "Authorization: Bearer SEU_TOKEN"
 ```
 
-### Listar todos (admin)
+### Atualizar prioridade de um job
+```bash
+curl -X PATCH http://localhost:8000/api/v1/jobs/{job_id} \
+  -H "Authorization: Bearer SEU_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"priority": 8}'
+```
+
+### Reenfileirar job falho
+```bash
+curl -X PATCH http://localhost:8000/api/v1/jobs/{job_id} \
+  -H "Authorization: Bearer SEU_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"requeue": true}'
+```
+
+### Substituir job completo (admin)
+```bash
+curl -X PUT http://localhost:8000/api/v1/jobs/{job_id} \
+  -H "Authorization: Bearer SEU_TOKEN_ADMIN" \
+  -H "Content-Type: application/json" \
+  -d '{"payload": {"task": "new_task"}, "priority": 3}'
+```
+
+### Listar todos os jobs (admin)
 ```bash
 curl http://localhost:8000/api/v1/jobs \
   -H "Authorization: Bearer SEU_TOKEN_ADMIN"
+```
+
+### Deletar job (admin)
+```bash
+curl -X DELETE http://localhost:8000/api/v1/jobs/{job_id} \
+  -H "Authorization: Bearer SEU_TOKEN_ADMIN"
+```
+
+### Trocar senha
+```bash
+curl -X PUT http://localhost:8000/api/v1/auth/users/{user_id}/password \
+  -H "Authorization: Bearer SEU_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"current_password": "senha123", "new_password": "nova_senha456"}'
+```
+
+### Promover usuário a admin
+```bash
+curl -X PATCH http://localhost:8000/api/v1/auth/users/{user_id}/role \
+  -H "Authorization: Bearer SEU_TOKEN_ADMIN" \
+  -H "Content-Type: application/json" \
+  -d '{"role": "admin"}'
 ```
 
 ---
@@ -186,6 +240,8 @@ curl http://localhost:8000/api/v1/jobs \
 | `JWT_EXPIRE_MINUTES` | Tempo de expiração do token em minutos           |
 | `ADMIN_USERNAME`     | Usuário admin criado no primeiro startup         |
 | `ADMIN_PASSWORD`     | Senha admin criada no primeiro startup           |
+
+> Gere uma chave JWT segura com: `openssl rand -hex 32`
 
 ---
 
