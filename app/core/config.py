@@ -28,9 +28,7 @@ class Settings(BaseSettings):
     PGADMIN_EMAIL: str = "admin@admin.com"
     PGADMIN_PASSWORD: str = "admin123"
 
-    class Config:
-        env_file = ".env"
-        extra = "ignore"
+    model_config = {"env_file": ".env", "extra": "ignore"}
 
 
 settings = Settings()

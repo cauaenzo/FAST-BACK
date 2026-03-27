@@ -10,8 +10,25 @@ COPY requirements.txt .
 RUN pip install --upgrade pip \
     && pip install --prefix=/install --no-cache-dir -r requirements.txt
 
-# ── stage 2: imagem final ──────────────────────────────────────────────────
-FROM python:3.12-slim
+# ── stage 2: testes ────────────────────────────────────────────────────────
+FROM python:3.12-slim AS test
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PYTHONPATH=/app
+
+WORKDIR /app
+
+RUN apt-get update && apt-get install -y --no-install-recommends libpq-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY --from=builder /install /usr/local
+COPY . .
+
+CMD ["pytest", "tests/", "-v"]
+
+# ── stage 3: produção ──────────────────────────────────────────────────────
+FROM python:3.12-slim AS production
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \

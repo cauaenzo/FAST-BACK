@@ -158,6 +158,36 @@ curl http://localhost:8000/api/v1/jobs
 
 ---
 
+## Testes
+
+O projeto conta com dois tipos de testes:
+
+- **Unitários** — testam o `JobService` isolado com repositório mockado, validando as regras de negócio
+- **Integração** — testam os endpoints HTTP completos com banco SQLite em memória
+
+```
+tests/
+├── conftest.py              # fixtures compartilhadas
+├── unit/
+│   └── test_job_service.py  # testes do service
+└── integration/
+    └── test_jobs_api.py     # testes dos endpoints
+```
+
+### Rodar localmente
+
+```bash
+venv\Scripts\python.exe -m pytest tests/ -v
+```
+
+### Rodar via Docker
+
+```bash
+docker-compose --profile test run --rm test
+```
+
+---
+
 ## pgAdmin
 
 Acesse `http://localhost:5050` e conecte ao servidor com:
