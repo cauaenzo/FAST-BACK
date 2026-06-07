@@ -14,8 +14,8 @@ alembic>=1.16.0
 
 python-jose[cryptography]>=3.5.0
 
-passlib[bcrypt]>=1.7.4
-bcrypt>=4.3.0
+passlib==1.7.4
+bcrypt==4.0.1
 
 pyfiglet>=1.0.3
 colorama>=0.4.6
