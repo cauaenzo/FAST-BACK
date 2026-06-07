@@ -86,12 +86,23 @@ Swagger UI:        http://0.0.0.0:8000/docs
 
 ## Serviços
 
-| Serviço   | URL                        | Descrição                  |
-|-----------|----------------------------|----------------------------|
-| API       | http://localhost:8000      | FastAPI                    |
-| Swagger   | http://localhost:8000/docs | Documentação interativa    |
-| ReDoc     | http://localhost:8000/redoc| Documentação alternativa   |
-| pgAdmin   | http://localhost:5050      | Interface visual do banco  |
+### Local (Docker)
+
+| Serviço   | URL                         | Descrição                  |
+|-----------|-----------------------------|----------------------------|
+| API       | http://localhost:8000       | FastAPI                    |
+| Swagger   | http://localhost:8000/docs  | Documentação interativa    |
+| ReDoc     | http://localhost:8000/redoc | Documentação alternativa   |
+| pgAdmin   | http://localhost:5050       | Interface visual do banco  |
+
+### Produção (Vercel)
+
+| Serviço   | URL                                                                                              | Descrição               |
+|-----------|--------------------------------------------------------------------------------------------------|-------------------------|
+| API       | [fast-back-j6ez.vercel.app](https://fast-back-j6ez.vercel.app)                                   | FastAPI                 |
+| Swagger   | [fast-back-j6ez.vercel.app/docs](https://fast-back-j6ez.vercel.app/docs)                         | Documentação interativa |
+| ReDoc     | [fast-back-j6ez.vercel.app/redoc](https://fast-back-j6ez.vercel.app/redoc)                       | Documentação alternativa|
+| Health    | [fast-back-j6ez.vercel.app/health](https://fast-back-j6ez.vercel.app/health)                     | Health check            |
 
 ---
 
